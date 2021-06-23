@@ -17,20 +17,15 @@ import (
 )
 
 const (
-	FALCONEMAIL   = "support@warrensbox.com"
-	FALCONURL     = "https://warrensbox.github.io/falcon-form"
-	FALCONAME     = "Nathan from DownloadPDF.org"
-	FALCONCOPY    = "Ⓒ 2018 Warrensbox - Crafted with ❤ in Iowa"
-	FALCONSUBJECT = "Attached is your PDF purchase"
-	SEND_OK       = "{ \"message\": \"Message sent successfully\"}"
-	SEND_NOT_OK   = "{ \"message\": \"Unble to send message\"}"
-	IMGHEADER     = "https://s3.us-east-2.amazonaws.com/kepler-images/warrensbox/falcon_form/falcon-form_350.png"
+	PRODUCTEMAIL = "support@warrensbox.com"
+	PRODUCTURL   = "https://holy-bible.download.org"
+	REPNAME      = "Nathan from DownloadPDF.org"
+	COPYRIGHT    = "Ⓒ 2021 DownloadPDF.org"
+	EMAILSUBJECT = "Attached is your PDF purchase"
+	SEND_OK      = "{ \"message\": \"Message sent successfully\"}"
+	SEND_NOT_OK  = "{ \"message\": \"Unble to send message\"}"
+	IMGHEADER    = "https://kepler-images.s3.us-east-2.amazonaws.com/downloadpdf/downloadpdf-email-logo-200.png"
 )
-
-type Person struct {
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-}
 
 func SendEmail(owner_email string, msg_content string) string {
 
@@ -47,7 +42,7 @@ func SendEmail(owner_email string, msg_content string) string {
 	SMTPPORT := getEmailCredential(svc, "SMTP_PORT")
 
 	emailContent := composeEmail(msg_content)
-	emailHeadFoot := composeEmailFooterHeader(FALCONURL, FALCONAME, FALCONCOPY)
+	emailHeadFoot := composeEmailFooterHeader(PRODUCTURL, REPNAME, COPYRIGHT)
 
 	emailBody, errBody := emailHeadFoot.GenerateHTML(emailContent)
 	if errBody != nil {
@@ -82,9 +77,9 @@ func SendEmail(owner_email string, msg_content string) string {
 	fmt.Println("Downloaded", file.Name(), numBytes, "bytes")
 
 	e := email.NewEmail()
-	e.From = FALCONEMAIL
+	e.From = PRODUCTEMAIL
 	e.To = []string{owner_email}
-	e.Subject = FALCONSUBJECT
+	e.Subject = EMAILSUBJECT
 	e.HTML = []byte(emailBody)
 	e.AttachFile(file.Name())
 	auth := smtp.PlainAuth("", SMTPUSER, SMTPPASS, SMTPEMAIL)

@@ -11,10 +11,9 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/stashedup/stripe-webhook-lambda/emailpdf"
 	"github.com/stripe/stripe-go/v71"
 	"github.com/stripe/stripe-go/webhook"
-	"github.com/warrensbox/stripe/event/emailpdf"
-	//"github.com/warrensbox/stripe/lambda/emailpdf"
 )
 
 var (
