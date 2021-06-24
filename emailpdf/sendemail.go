@@ -17,14 +17,14 @@ import (
 )
 
 const (
-	PRODUCTEMAIL = "support@warrensbox.com"
-	PRODUCTURL   = "https://holy-bible.download.org"
+	PRODUCTEMAIL = "support@downloadpdf.org"
+	PRODUCTURL   = "https://holy-bible.downloadpdf.org"
 	REPNAME      = "Nathan from DownloadPDF.org"
 	COPYRIGHT    = "Ⓒ 2021 DownloadPDF.org"
 	EMAILSUBJECT = "Attached is your PDF purchase"
 	SEND_OK      = "{ \"message\": \"Message sent successfully\"}"
 	SEND_NOT_OK  = "{ \"message\": \"Unble to send message\"}"
-	IMGHEADER    = "https://kepler-images.s3.us-east-2.amazonaws.com/downloadpdf/downloadpdf-email-logo-200.png"
+	IMGHEADER    = "https://kepler-images.s3.us-east-2.amazonaws.com/downloadpdf/downloadpdf-email-logo-350.png"
 )
 
 func SendEmail(owner_email string, msg_content string) string {
@@ -123,7 +123,7 @@ func composeEmail(msg_content string) hermes.Email {
 			},
 			//Dictionary: dictionary,
 			Outros: []string{
-				"Need help, or have questions? Shoot us an email at support@warrensbox.com.",
+				"Need help, or have questions? Shoot us an email at support@downloadpdf.org.",
 			},
 		},
 	}
