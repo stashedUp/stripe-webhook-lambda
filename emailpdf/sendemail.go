@@ -153,7 +153,7 @@ func ErrorExit(msg string, e error) {
 	}
 }
 
-func getFilename(url string, session *ss.Session) string {
+func getFilename(host string, session *ss.Session) string {
 
 	svc := dynamodb.New(session)
 
@@ -161,7 +161,7 @@ func getFilename(url string, session *ss.Session) string {
 		TableName: aws.String("DownloadPDF"),
 		Key: map[string]*dynamodb.AttributeValue{
 			"Host": {
-				S: aws.String("bible"),
+				S: aws.String(host),
 			},
 		},
 	})
