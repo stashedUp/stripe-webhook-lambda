@@ -118,9 +118,7 @@ func handleWebhook(r *events.APIGatewayProxyRequest) string {
 		fmt.Println("Checkout Session completed!")
 		fmt.Println(resp.Data.Object.CustomerEmail)
 		fmt.Println(resp.Data.Object.AmountTotal)
-		if resp.Data.Object.AmountTotal == 200 {
-			fmt.Println("THIS IS A BIBLE!")
-		}
+
 		custEmail := resp.Data.Object.CustomerEmail
 		host := emailpdf.GetHost(resp.Data.Object.CancelURL)
 		emailpdf.SendEmail(custEmail, host)
