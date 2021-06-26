@@ -122,11 +122,10 @@ func handleWebhook(r *events.APIGatewayProxyRequest) string {
 			fmt.Println("THIS IS A BIBLE!")
 		}
 		custEmail := resp.Data.Object.CustomerEmail
-		emailpdf.SendEmail(custEmail, "hello")
+		host := emailpdf.GetHost(resp.Data.Object.CancelURL)
+		emailpdf.SendEmail(custEmail, host)
 	}
-	fmt.Println("event")
-	fmt.Println(event.Data)
-	fmt.Println("event")
+
 	return writeJSON(struct {
 		SessionID string `json:"sessionId"`
 	}{

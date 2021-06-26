@@ -4,11 +4,15 @@ import (
 	"fmt"
 	"log"
 	"net/smtp"
+	"net/url"
 	"os"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	ss "github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/aws/aws-sdk-go/service/ssm"
@@ -27,7 +31,7 @@ const (
 	IMGHEADER    = "https://kepler-images.s3.us-east-2.amazonaws.com/downloadpdf/downloadpdf-email-logo-350.png"
 )
 
-func SendEmail(owner_email string, msg_content string) string {
+func SendEmail(owner_email string, host string) string {
 
 	fmt.Printf("Attempting to send email...\n")
 	session := session.Must(session.NewSession())
@@ -41,7 +45,7 @@ func SendEmail(owner_email string, msg_content string) string {
 
 	SMTPPORT := getEmailCredential(svc, "SMTP_PORT")
 
-	emailContent := composeEmail(msg_content)
+	emailContent := composeEmail()
 	emailHeadFoot := composeEmailFooterHeader(PRODUCTURL, REPNAME, COPYRIGHT)
 
 	emailBody, errBody := emailHeadFoot.GenerateHTML(emailContent)
@@ -50,7 +54,8 @@ func SendEmail(owner_email string, msg_content string) string {
 	}
 
 	bucket := "downloadpdf.org"
-	item := "bb.pdf"
+
+	item := getFilename(host, session)
 
 	// 2) Create an AWS session
 	sess, _ := ss.NewSession(&aws.Config{
@@ -106,14 +111,9 @@ func getEmailCredential(svc *ssm.SSM, val string) string {
 	return smtpInfo
 }
 
-func composeEmail(msg_content string) hermes.Email {
+func composeEmail() hermes.Email {
 
 	fmt.Println("Composing email")
-
-	// dictionary := []hermes.Entry{
-	// 	{Key: "Message", Value: msg_content},
-	// }
-	// }
 
 	return hermes.Email{
 		Body: hermes.Body{
@@ -151,4 +151,51 @@ func ErrorExit(msg string, e error) {
 		fmt.Fprintf(os.Stderr, "ERROR: %s, %v\n", msg, e)
 		os.Exit(1)
 	}
+}
+
+func getFilename(url string, session *ss.Session) string {
+
+	svc := dynamodb.New(session)
+
+	result, err := svc.GetItem(&dynamodb.GetItemInput{
+		TableName: aws.String("DownloadPDF"),
+		Key: map[string]*dynamodb.AttributeValue{
+			"Host": {
+				S: aws.String("bible"),
+			},
+		},
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	item := Table{}
+	err = dynamodbattribute.UnmarshalMap(result.Item, &item)
+
+	if result != nil {
+		fmt.Println("Found item:")
+		fmt.Println("Source:  ", item.Source)
+	}
+
+	return item.Source
+}
+
+func GetHost(hostname string) string {
+
+	domain, err := url.Parse(hostname)
+	if err != nil {
+		fmt.Println("ERROR Parsing URL")
+	}
+
+	fmt.Println("DOMAIN", domain.Host)
+
+	hostParts := strings.Split(domain.Host, ".")
+
+	fmt.Println("Host Part", hostParts[0])
+
+	return hostParts[0]
+}
+
+type Table struct {
+	Source string
 }
