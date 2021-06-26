@@ -22,7 +22,7 @@ import (
 
 const (
 	PRODUCTEMAIL = "support@downloadpdf.org"
-	PRODUCTURL   = "https://holy-bible.downloadpdf.org"
+	//PRODUCTURL   = "https://holy-bible.downloadpdf.org"
 	REPNAME      = "Nathan from DownloadPDF.org"
 	COPYRIGHT    = "Ⓒ 2021 DownloadPDF.org"
 	EMAILSUBJECT = "Attached is your PDF purchase"
@@ -37,6 +37,8 @@ func SendEmail(owner_email string, host string) string {
 	session := session.Must(session.NewSession())
 	svc := ssm.New(session)
 
+	composedURL := fmt.Sprintf("https://%s.downloadpdf.org", host)
+
 	SMTPPASS := getEmailCredential(svc, "SMTP_PASS")
 
 	SMTPUSER := getEmailCredential(svc, "SMTP_USER")
@@ -46,7 +48,7 @@ func SendEmail(owner_email string, host string) string {
 	SMTPPORT := getEmailCredential(svc, "SMTP_PORT")
 
 	emailContent := composeEmail()
-	emailHeadFoot := composeEmailFooterHeader(PRODUCTURL, REPNAME, COPYRIGHT)
+	emailHeadFoot := composeEmailFooterHeader(composedURL, REPNAME, COPYRIGHT)
 
 	emailBody, errBody := emailHeadFoot.GenerateHTML(emailContent)
 	if errBody != nil {
@@ -54,7 +56,6 @@ func SendEmail(owner_email string, host string) string {
 	}
 
 	bucket := "downloadpdf.org"
-
 	item := getFilename(host, session)
 
 	// 2) Create an AWS session
