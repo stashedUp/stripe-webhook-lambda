@@ -21,10 +21,9 @@ import (
 )
 
 const (
-	PRODUCTEMAIL = "support@downloadpdf.org"
-	//PRODUCTURL   = "https://holy-bible.downloadpdf.org"
-	REPNAME      = "Nathan from DownloadPDF.org"
-	COPYRIGHT    = "Ⓒ 2021 DownloadPDF.org"
+	PRODUCTEMAIL = "support@warrensbox.com"
+	REPNAME      = "Warren from Warrensbox"
+	COPYRIGHT    = "Ⓒ 2024 warrensbox.com"
 	EMAILSUBJECT = "Attached is your PDF purchase"
 	SEND_OK      = "{ \"message\": \"Message sent successfully\"}"
 	SEND_NOT_OK  = "{ \"message\": \"Unble to send message\"}"
@@ -37,7 +36,7 @@ func SendEmail(owner_email string, host string) string {
 	session := session.Must(session.NewSession())
 	svc := ssm.New(session)
 
-	composedURL := fmt.Sprintf("https://%s.downloadpdf.org", host)
+	composedURL := fmt.Sprintf("https://%s.warrensbox.com", host)
 
 	SMTPPASS := getEmailCredential(svc, "SMTP_PASS")
 
@@ -124,7 +123,7 @@ func composeEmail() hermes.Email {
 			},
 			//Dictionary: dictionary,
 			Outros: []string{
-				"Need help, or have questions? Shoot us an email at support@downloadpdf.org.",
+				"Need help, or have questions? Shoot us an email at support@warrensbox.com",
 			},
 		},
 	}
